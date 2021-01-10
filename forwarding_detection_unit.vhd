@@ -121,93 +121,52 @@ begin
 		forwarding_ik <= "0000";		
 	end if; 
 
---
---
+
+	
 ------ instri and instrj compared ----
---	if IR_ID_EX(31 downto 26) = RTYPE then 
---		if IR_ID_EX(31 downto 0) /= "00000000000000000000000000000000" then
---			if IR_IF_ID(31 downto 26) = RTYPE then
---				if IR_IF_ID(25 downto 21) = IR_ID_EX(15 downto 11) AND IR_IF_ID(20 downto 16) = IR_ID_EX(15 downto 11) then 
---					forwarding_ij <= "001";
---				elsif IR_IF_ID(25 downto 21) = IR_ID_EX(15 downto 11) then
---					forwarding_ij <= "010";
---				elsif IR_IF_ID(20 downto 16) = IR_ID_EX(15 downto 11) then
---					forwarding_ij <= "011";
---				else 
---					forwarding_ij <= "000"; 
---				end if;		
---			else --ITYPE and JTYPE (but not J and JAL)
---				if IR_IF_ID(31 downto 26) /= JTYPE_J AND IR_IF_ID(31 downto 26) /= JTYPE_JAL then
---					if IR_IF_ID(31 downto 26) = ITYPE_SW OR IR_IF_ID(31 downto 26) = ITYPE_SB then
---							if IR_IF_ID(25 downto 21) = IR_ID_EX(15 downto 11) then 
---								forwarding_ij <= "010";
---							elsif  IR_IF_ID(20 downto 16) = IR_ID_EX(15 downto 11) then
---								forwarding_ij <= "100";
---							else 
---								forwarding_ij <= "000";
---							end if;
---					else
---							if IR_IF_ID(25 downto 21) = IR_ID_EX(15 downto 11) then 
---								forwarding_ij <= "010";
---							else 
---								forwarding_ij <= "000";
---							end if;	
---					end if;
---				else
---				forwarding_ij <= "000";	
---				end if;
---			end if;
---		else 
---			forwarding_ij <= "000";
---		end if;
---	elsif IR_ID_EX(31 downto 26) = ITYPE_LHI OR IR_ID_EX(31 downto 26) = ITYPE_LB OR IR_ID_EX(31 downto 26) = ITYPE_LW OR IR_ID_EX(31 downto 26) = ITYPE_LBU OR IR_ID_EX(31 downto 26) = ITYPE_LHU then
---		if IR_IF_ID(31 downto 26) = ITYPE_SW OR IR_IF_ID(31 downto 26) = ITYPE_SB then
---						if IR_IF_ID(25 downto 21) = IR_ID_EX(20 downto 16) then 
---							forwarding_ij <= "010";
---						elsif  IR_IF_ID(20 downto 16) = IR_ID_EX(20 downto 16) then
---							forwarding_ij <= "101";
---						else 
---							forwarding_ij <= "000";
---						end if;	
---		else
---			forwarding_ij <= "000";
---		end if;	
---	elsif IR_ID_EX(31 downto 26) /= ITYPE_LHI AND IR_ID_EX(31 downto 26) /= ITYPE_LB AND IR_ID_EX(31 downto 26) /= ITYPE_LW AND IR_ID_EX(31 downto 26) /= ITYPE_LBU AND IR_ID_EX(31 downto 26) /= ITYPE_LHU AND IR_ID_EX(31 downto 26) /= JTYPE_J AND IR_ID_EX(31 downto 26) /= JTYPE_JAL and IR_ID_EX(31 downto 26) /= ITYPE_NOP and IR_ID_EX(31 downto 26) /= ITYPE_BEQZ and IR_ID_EX(31 downto 26) /= ITYPE_BNEZ and IR_ID_EX(31 downto 26) /= ITYPE_JR and IR_ID_EX(31 downto 26) /= ITYPE_JALR then
---		if IR_IF_ID(31 downto 26) = RTYPE then
---			if IR_IF_ID(25 downto 21) = IR_ID_EX(20 downto 16) AND IR_IF_ID(20 downto 16) = IR_ID_EX(20 downto 16) then --both operand equal to destination
---				forwarding_ij <= "001";
---			elsif IR_IF_ID(25 downto 21) = IR_ID_EX(20 downto 16) then
---				forwarding_ij <= "010";
---			elsif IR_IF_ID(20 downto 16) = IR_ID_EX(20 downto 16) then
--- 				forwarding_ij <= "011";
---			else 
---				forwarding_ij <= "000";
---			end if;
---		else --ITYPE and JTYPE (but not J and JAL)
---			if IR_IF_ID(31 downto 26) /= JTYPE_J AND IR_IF_ID(31 downto 26) /= JTYPE_JAL then 
---				if IR_IF_ID(31 downto 26) = ITYPE_SW OR IR_IF_ID(31 downto 26) = ITYPE_SB then
---						if IR_IF_ID(25 downto 21) = IR_ID_EX(20 downto 16) then 
---							forwarding_ij <= "010";
---						elsif  IR_IF_ID(20 downto 16) = IR_ID_EX(20 downto 16) then
---							forwarding_ij <= "100";
---						else 
---							forwarding_ij <= "000";
---						end if;
---				else
---						if IR_IF_ID(25 downto 21) = IR_ID_EX(20 downto 16) then 
---							forwarding_ij <= "010";
---						else 
---							forwarding_ij <= "000";
---						end if;	
---				end if;
---			else
---				forwarding_ij <= "000";					
---			end if;
---		end if;	
---	else
---		forwarding_ij <= "000";
---	end if;
---
+   if IR_ID_EX(6 downto 0) = LW then
+		if IR_IF_ID(6 downto 0) = SW then 
+			if IR_IF_ID(24 downto 20) = IR_ID_EX(11 downto 7) then
+				forwarding_ij <= "001";
+			else 
+				forwarding_ij <= "000";
+			end if;
+		else
+			forwarding_ij <= "000";
+		end if;
+	
+	elsif IR_ID_EX(6 downto 0) = RTYPE OR IR_ID_EX(6 downto 0) = ITYPE OR IR_ID_EX(6 downto 0) = LUI OR IR_ID_EX(6 downto 0) = AUIPC then 
+		if IR_IF_ID(6 downto 0) = RTYPE then
+			if IR_IF_ID(24 downto 20) = IR_ID_EX(11 downto 7) AND IR_IF_ID(19 downto 15) = IR_ID_EX(11 downto 7) then --both operand equal to destination
+				forwarding_ij <= "010";
+			elsif IR_IF_ID(19 downto 15) = IR_ID_EX(11 downto 7) then
+				forwarding_ij <= "011";
+			elsif IR_IF_ID(24 downto 20) = IR_ID_EX(11 downto 7) then
+				forwarding_ij <= "100";
+			else
+				forwarding_ij <= "000";
+			end if;
+		elsif IR_IF_ID(6 downto 0) = ITYPE OR IR_IF_ID(6 downto 0) = LW then
+			if IR_IF_ID(19 downto 15) = IR_ID_EX(11 downto 7) then 
+				forwarding_ij <= "011";
+			else 
+		      forwarding_ij <= "000";
+			end if;	
+		elsif IR_IF_ID(6 downto 0) = SW then
+			if IR_IF_ID(24 downto 20) = IR_ID_EX(11 downto 7) AND IR_IF_ID(19 downto 15) = IR_ID_EX(11 downto 7) then
+				forwarding_ij <= "101";
+			elsif IR_IF_ID(19 downto 15) = IR_ID_EX(11 downto 7) then
+				forwarding_ij <= "110";
+			elsif IR_IF_ID(24 downto 20) = IR_ID_EX(11 downto 7) then
+				forwarding_ij <= "111";
+			else
+		      forwarding_ij <= "000";
+			end if;	
+		end if;
+	
+	else
+		forwarding_ij <= "000";
+	end if;
 end process forwarding_detection_proc; 
 
 end architecture;
